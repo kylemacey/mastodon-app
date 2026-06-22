@@ -1,4 +1,5 @@
 import type { ApiAccountFieldJSON } from './accounts';
+import type { ApiProfileFont } from './profile_theme';
 import type { ApiFeaturedTagJSON } from './tags';
 
 export interface ApiProfileJSON {
@@ -12,6 +13,12 @@ export interface ApiProfileJSON {
   header: string;
   header_static: string;
   header_description: string;
+  profile_background: string | null;
+  profile_background_static: string | null;
+  profile_background_color: string;
+  profile_accent_color: string;
+  profile_font: ApiProfileFont;
+  profile_custom_css: string;
   locked: boolean;
   bot: boolean;
   hide_collections: boolean;
@@ -29,6 +36,10 @@ export type ApiProfileUpdateParams = Partial<
     ApiProfileJSON,
     | 'avatar_description'
     | 'header_description'
+    | 'profile_background_color'
+    | 'profile_accent_color'
+    | 'profile_font'
+    | 'profile_custom_css'
     | 'display_name'
     | 'note'
     | 'locked'

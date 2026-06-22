@@ -90,6 +90,7 @@ export const accountDefaultValues: AccountShape = {
   note: '',
   note_emojified: '',
   note_plain: 'string',
+  profile_font: 'system',
   roles: ImmutableList<AccountRole>(),
   uri: '',
   url: '',

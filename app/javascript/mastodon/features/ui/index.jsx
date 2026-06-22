@@ -33,6 +33,7 @@ import { initialState, me, owner, singleUserMode, trendsEnabled, landingPage, lo
 
 import BundleColumnError from './components/bundle_column_error';
 import { NavigationBar } from './components/navigation_bar';
+import { ProfilePageThemeShell } from './components/profile_page_theme_shell';
 import { UploadArea } from './components/upload_area';
 import { HashtagMenuController } from './components/hashtag_menu_controller';
 import { ColumnsArea } from './components/columns_area';
@@ -637,7 +638,11 @@ class UI extends PureComponent {
 
     return (
       <Hotkeys global handlers={handlers}>
-        <div className={classNames('ui', { 'is-composing': isComposing })} ref={this.setRef}>
+        <ProfilePageThemeShell
+          className={classNames('ui', { 'is-composing': isComposing })}
+          ref={this.setRef}
+          location={location}
+        >
           {!minimalShell && (
             <SkipLinks
               multiColumn={layout === 'multi-column'}
@@ -663,7 +668,7 @@ class UI extends PureComponent {
           <LoadingBarContainer className='loading-bar' />
           <ModalContainer />
           <UploadArea active={draggingOver} onClose={this.closeUploadModal} />
-        </div>
+        </ProfilePageThemeShell>
       </Hotkeys>
     );
   }

@@ -100,6 +100,7 @@ class Account < ApplicationRecord
   include Account::Interactions
   include Account::Mappings
   include Account::Merging
+  include Account::ProfileTheme
   include Account::Search
   include Account::Sensitizes
   include Account::Silences

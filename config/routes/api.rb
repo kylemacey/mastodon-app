@@ -121,6 +121,7 @@ namespace :api, format: false do
       scope module: :profile do
         resource :avatar, only: :destroy
         resource :header, only: :destroy
+        resource :background, only: :destroy
       end
     end
 
@@ -235,6 +236,7 @@ namespace :api, format: false do
         post :unblock
         post :mute
         post :unmute
+        get :profile_theme
       end
 
       scope module: :accounts do

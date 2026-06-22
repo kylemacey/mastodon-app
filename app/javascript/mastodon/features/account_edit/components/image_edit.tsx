@@ -57,6 +57,7 @@ export const AccountImageEdit: FC<{
     selectImageInfo(state, location),
   );
   const hasAlt = !!alt;
+  const supportsAlt = location !== 'profileBackground';
   const dispatch = useAppDispatch();
 
   const handleModal = useCallback(
@@ -76,13 +77,17 @@ export const AccountImageEdit: FC<{
           },
           icon: ReplaceImageIcon,
         },
-        {
-          text: intl.formatMessage(hasAlt ? messages.altEdit : messages.altAdd),
-          action: () => {
-            handleModal('ACCOUNT_EDIT_IMAGE_ALT');
-          },
-          icon: hasAlt ? EditIcon : AddIcon,
-        },
+        supportsAlt
+          ? {
+              text: intl.formatMessage(
+                hasAlt ? messages.altEdit : messages.altAdd,
+              ),
+              action: () => {
+                handleModal('ACCOUNT_EDIT_IMAGE_ALT');
+              },
+              icon: hasAlt ? EditIcon : AddIcon,
+            }
+          : null,
         null,
         {
           text: intl.formatMessage(messages.remove),
@@ -93,7 +98,7 @@ export const AccountImageEdit: FC<{
           dangerous: true,
         },
       ] satisfies MenuItem[],
-    [handleModal, hasAlt, intl],
+    [handleModal, hasAlt, intl, supportsAlt],
   );
 
   const handleAddImage = useCallback(() => {
@@ -117,7 +122,7 @@ export const AccountImageEdit: FC<{
   return (
     <Dropdown
       items={items}
-      placement={location === 'header' ? 'bottom-end' : 'bottom-start'}
+      placement={location === 'avatar' ? 'bottom-start' : 'bottom-end'}
       offset={popperOffset}
       className={classes.imageMenu}
       icon='camera'

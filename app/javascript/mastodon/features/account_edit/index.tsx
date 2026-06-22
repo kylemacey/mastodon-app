@@ -113,6 +113,14 @@ export const messages = defineMessages({
     id: 'account_edit.profile_tab.subtitle',
     defaultMessage: 'Customize how your profile is displayed.',
   },
+  profileStyleTitle: {
+    id: 'account_edit.profile_style.title',
+    defaultMessage: 'Profile style',
+  },
+  profileStyleSubtitle: {
+    id: 'account_edit.profile_style.subtitle',
+    defaultMessage: 'Choose a background photo, colors, font, and custom CSS.',
+  },
   advancedSettingsTitle: {
     id: 'account_edit.advanced_settings.title',
     defaultMessage: 'Advanced settings',
@@ -193,6 +201,9 @@ export const AccountEdit: FC = () => {
   }
 
   const headerSrc = autoPlayGif ? profile.header : profile.headerStatic;
+  const backgroundSrc = autoPlayGif
+    ? profile.profileBackground
+    : profile.profileBackgroundStatic;
   const hasName = !!profile.displayName;
   const hasBio = !!profile.bio;
   const hasFields = profile.fields.length > 0;
@@ -332,8 +343,8 @@ export const AccountEdit: FC = () => {
         </AccountEditSection>
 
         <AccountEditSection
-          title={messages.profileTabTitle}
-          description={messages.profileTabSubtitle}
+          title={messages.profileStyleTitle}
+          description={messages.profileStyleSubtitle}
           showDescription
           buttons={
             <Button
@@ -346,7 +357,15 @@ export const AccountEdit: FC = () => {
               />
             </Button>
           }
-        />
+        >
+          <div className={classes.profileBackgroundPreview}>
+            {backgroundSrc && <img src={backgroundSrc} alt='' />}
+            <AccountImageEdit
+              location='profileBackground'
+              className={classes.profileBackgroundButton}
+            />
+          </div>
+        </AccountEditSection>
 
         <AccountEditSection title={messages.advancedSettingsTitle}>
           <ToggleField

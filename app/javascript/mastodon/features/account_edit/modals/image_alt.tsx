@@ -16,13 +16,31 @@ import type { DialogModalProps } from '../../ui/components/dialog_modal';
 
 import classes from './styles.module.scss';
 
+type AltImageLocation = Exclude<ImageLocation, 'profileBackground'>;
+
+const altImageFields = {
+  avatar: {
+    description: 'avatarDescription',
+    patchParam: 'avatar_description',
+    static: 'avatarStatic',
+  },
+  header: {
+    description: 'headerDescription',
+    patchParam: 'header_description',
+    static: 'headerStatic',
+  },
+} as const;
+
 export const ImageAltModal: FC<
   DialogModalProps & { location: ImageLocation }
 > = ({ onClose, location }) => {
   const { profile, isPending } = useAppSelector((state) => state.profileEdit);
+  const altLocation: AltImageLocation =
+    location === 'profileBackground' ? 'avatar' : location;
+  const fields = altImageFields[altLocation];
 
-  const initialAlt = profile?.[`${location}Description`];
-  const imageSrc = profile?.[`${location}Static`];
+  const initialAlt = profile?.[fields.description];
+  const imageSrc = profile?.[fields.static];
 
   const [altText, setAltText] = useState(initialAlt ?? '');
 
@@ -30,10 +48,14 @@ export const ImageAltModal: FC<
   const handleSave = useCallback(() => {
     void dispatch(
       patchProfile({
-        [`${location}_description`]: altText,
+        [fields.patchParam]: altText,
       }),
     ).then(onClose);
-  }, [altText, dispatch, location, onClose]);
+  }, [altText, dispatch, fields.patchParam, onClose]);
+
+  if (location === 'profileBackground') {
+    return <LoadingIndicator />;
+  }
 
   if (!imageSrc) {
     return <LoadingIndicator />;

@@ -69,6 +69,40 @@ RSpec.describe '/api/v1/accounts' do
     end
   end
 
+  describe 'GET /api/v1/accounts/:id/profile_theme' do
+    let(:account) do
+      Fabricate(
+        :account,
+        username: 'kyle',
+        domain: 'kyspace.net',
+        profile_background: fixture_file_upload('attachment.jpg', 'image/jpeg'),
+        profile_background_color: '#112233',
+        profile_accent_color: '#445566',
+        profile_font: 'serif',
+        profile_custom_css: 'body { color: red; } .bio { color: blue; }'
+      )
+    end
+
+    it 'returns a public scoped profile theme without authentication' do
+      get "/api/v1/accounts/#{account.id}/profile_theme"
+
+      expect(response).to have_http_status(200)
+      expect(response.content_type)
+        .to start_with('application/json')
+      expect(response.parsed_body)
+        .to include(
+          id: account.id.to_s,
+          profile_dom_id: 'profile_kyle__kyspace_net',
+          profile_background: %r{https://.*},
+          profile_background_static: %r{https://.*},
+          profile_background_color: '#112233',
+          profile_accent_color: '#445566',
+          profile_font: 'serif',
+          profile_custom_css: "#profile_kyle__kyspace_net { color: red; }\n#profile_kyle__kyspace_net .bio { color: blue; }"
+        )
+    end
+  end
+
   describe 'POST /api/v1/accounts' do
     subject do
       post '/api/v1/accounts', headers: headers, params: { username: 'test', password: '12345678', email: 'hello@world.tld', agreement: agreement, date_of_birth: date_of_birth }

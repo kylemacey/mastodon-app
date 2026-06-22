@@ -11,7 +11,12 @@ RSpec.describe 'Profile API' do
     Fabricate(
       :account,
       avatar: fixture_file_upload('avatar.gif', 'image/gif'),
-      header: fixture_file_upload('attachment.jpg', 'image/jpeg')
+      header: fixture_file_upload('attachment.jpg', 'image/jpeg'),
+      profile_background: fixture_file_upload('attachment.jpg', 'image/jpeg'),
+      profile_background_color: '#112233',
+      profile_accent_color: '#445566',
+      profile_font: 'mono',
+      profile_custom_css: '.account__header { color: hotpink; }'
     )
   end
   let(:user) { account.user }
@@ -37,6 +42,12 @@ RSpec.describe 'Profile API' do
           'header' => %r{https://.*},
           'header_static' => %r{https://.*},
           'header_description' => '',
+          'profile_background' => %r{https://.*},
+          'profile_background_static' => %r{https://.*},
+          'profile_background_color' => '#112233',
+          'profile_accent_color' => '#445566',
+          'profile_font' => 'mono',
+          'profile_custom_css' => '.account__header { color: hotpink; }',
           'hide_collections' => anything,
           'bot' => account.bot,
           'locked' => account.locked,
@@ -71,6 +82,11 @@ RSpec.describe 'Profile API' do
         indexable: true,
         locked: false,
         note: 'Hello!',
+        profile_background: fixture_file_upload('attachment.jpg', 'image/jpeg'),
+        profile_background_color: '#abc',
+        profile_accent_color: 'def',
+        profile_font: 'pixel',
+        profile_custom_css: '.account__header { color: red; }',
         attribution_domains: ['example.com'],
         fields_attributes: [
           { name: 'pronouns', value: 'she/her' },
@@ -115,6 +131,11 @@ RSpec.describe 'Profile API' do
           avatar: exist,
           avatar_description: 'animated walking round cat',
           header: exist,
+          profile_background: exist,
+          profile_background_color: '#AABBCC',
+          profile_accent_color: '#DDEEFF',
+          profile_font: 'pixel',
+          profile_custom_css: '.account__header { color: red; }',
           attribution_domains: ['example.com'],
           fields: contain_exactly(
             have_attributes(
@@ -177,6 +198,29 @@ RSpec.describe 'Profile API' do
       expect(account.header).to_not exist
       expect(ActivityPub::UpdateDistributionWorker)
         .to have_enqueued_sidekiq_job(account.id)
+    end
+  end
+
+  describe 'DELETE /api/v1/profile/background' do
+    context 'with wrong scope' do
+      before do
+        delete '/api/v1/profile/background', headers: headers
+      end
+
+      it_behaves_like 'forbidden for wrong scope', 'read'
+    end
+
+    it 'returns http success, preserves the avatar and header, deletes the background' do
+      delete '/api/v1/profile/background', headers: headers
+
+      expect(response).to have_http_status(200)
+      expect(response.content_type)
+        .to start_with('application/json')
+
+      account.reload
+      expect(account.avatar).to exist
+      expect(account.header).to exist
+      expect(account.profile_background).to_not exist
     end
   end
 end

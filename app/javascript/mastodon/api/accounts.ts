@@ -18,6 +18,7 @@ import type {
   ApiProfileJSON,
   ApiProfileUpdateParams,
 } from '../api_types/profile';
+import type { ApiProfileThemeJSON } from '../api_types/profile_theme';
 
 export const apiGetAccounts = (ids: string[]) =>
   apiRequestGet<ApiAccountJSON[]>('v1/accounts', {
@@ -75,11 +76,17 @@ export const apiGetProfile = () => apiRequestGet<ApiProfileJSON>('v1/profile');
 export const apiPatchProfile = (params: ApiProfileUpdateParams | FormData) =>
   apiRequestPatch<ApiProfileJSON>('v1/profile', params);
 
+export const apiGetAccountProfileTheme = (id: string) =>
+  apiRequestGet<ApiProfileThemeJSON>(`v1/accounts/${id}/profile_theme`);
+
 export const apiDeleteProfileAvatar = () =>
   apiRequestDelete('v1/profile/avatar');
 
 export const apiDeleteProfileHeader = () =>
   apiRequestDelete('v1/profile/header');
+
+export const apiDeleteProfileBackground = () =>
+  apiRequestDelete('v1/profile/background');
 
 export const apiSubscribeByEmail = (id: string, email: string) =>
   apiRequestPost(`v1/accounts/${id}/email_subscriptions`, { email });

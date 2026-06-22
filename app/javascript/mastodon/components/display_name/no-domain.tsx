@@ -7,6 +7,7 @@ import { EmojiHTML } from '../emoji/html';
 import { Skeleton } from '../skeleton';
 
 import type { DisplayNameProps } from './index';
+import { profileFontClassName } from './profile_font';
 
 export const DisplayNameWithoutDomain: FC<
   Omit<DisplayNameProps, 'variant'> & ComponentPropsWithoutRef<'span'>
@@ -15,7 +16,11 @@ export const DisplayNameWithoutDomain: FC<
     <AnimateEmojiProvider
       {...props}
       as='span'
-      className={classNames('display-name', className)}
+      className={classNames(
+        'display-name',
+        profileFontClassName(account),
+        className,
+      )}
     >
       <bdi>
         {account ? (

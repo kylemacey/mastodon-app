@@ -2668,6 +2668,35 @@ a.account__display-name {
   font-weight: 500;
 }
 
+.profile-font--sans,
+.profile-font--sans .display-name__account,
+.profile-font--sans .display-name__html {
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+}
+
+.profile-font--serif,
+.profile-font--serif .display-name__account,
+.profile-font--serif .display-name__html {
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.profile-font--mono,
+.profile-font--mono .display-name__account,
+.profile-font--mono .display-name__html {
+  font-family: 'Roboto Mono', monospace;
+}
+
+.profile-font--pixel,
+.profile-font--pixel .display-name__account,
+.profile-font--pixel .display-name__html {
+  font-family: silkscreen-wrapstodon, 'Roboto Mono', monospace;
+}
+
 .status__relative-time,
 .detailed-status__datetime,
 .detailed-status__link {

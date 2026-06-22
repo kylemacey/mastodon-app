@@ -9,7 +9,7 @@ class Api::V1::AccountsController < Api::BaseController
   before_action -> { doorkeeper_authorize! :follow, :write, :'write:blocks' }, only: [:block, :unblock]
   before_action -> { doorkeeper_authorize! :write, :'write:accounts' }, only: [:create]
 
-  before_action :require_user!, except: [:index, :show, :create]
+  before_action :require_user!, except: [:index, :show, :create, :profile_theme]
   before_action :require_client_credentials!, only: [:create]
   before_action :set_account, except: [:index, :create]
   before_action :set_accounts, only: [:index]
@@ -30,6 +30,11 @@ class Api::V1::AccountsController < Api::BaseController
   def show
     cache_if_unauthenticated!
     render json: @account, serializer: REST::AccountSerializer
+  end
+
+  def profile_theme
+    cache_if_unauthenticated!
+    render json: @account, serializer: REST::ProfileThemeSerializer
   end
 
   def create

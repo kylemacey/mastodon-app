@@ -7,7 +7,7 @@ module Settings
 
     def destroy
       if valid_picture?
-        if UpdateAccountService.new.call(@account, { @picture => nil, "#{@picture}_remote_url" => '' })
+        if UpdateAccountService.new.call(@account, picture_params)
           ActivityPub::UpdateDistributionWorker.perform_in(ActivityPub::UpdateDistributionWorker::DEBOUNCE_DELAY, @account.id)
           redirect_to settings_profile_path, notice: I18n.t('generic.changes_saved_msg'), status: 303
         else
@@ -29,7 +29,13 @@ module Settings
     end
 
     def valid_picture?
-      %w(avatar header).include?(@picture)
+      %w(avatar header profile_background).include?(@picture)
+    end
+
+    def picture_params
+      params = { @picture => nil }
+      params["#{@picture}_remote_url"] = '' unless @picture == 'profile_background'
+      params
     end
   end
 end

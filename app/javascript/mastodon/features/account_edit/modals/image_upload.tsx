@@ -33,6 +33,10 @@ const messages = defineMessages({
     id: 'account_edit.upload_modal.title_add.header',
     defaultMessage: 'Add cover photo',
   },
+  profileBackgroundAdd: {
+    id: 'account_edit.upload_modal.title_add.profile_background',
+    defaultMessage: 'Add background photo',
+  },
   avatarReplace: {
     id: 'account_edit.upload_modal.title_replace.avatar',
     defaultMessage: 'Replace profile photo',
@@ -40,6 +44,10 @@ const messages = defineMessages({
   headerReplace: {
     id: 'account_edit.upload_modal.title_replace.header',
     defaultMessage: 'Replace cover photo',
+  },
+  profileBackgroundReplace: {
+    id: 'account_edit.upload_modal.title_replace.profile_background',
+    defaultMessage: 'Replace background photo',
   },
   zoomLabel: {
     id: 'account_edit.upload_modal.step_crop.zoom',
@@ -57,36 +65,45 @@ export const ImageUploadModal: FC<
   const title = intl.formatMessage(
     oldSrc ? messages[`${location}Replace`] : messages[`${location}Add`],
   );
+  const dispatch = useAppDispatch();
 
   // State for individual steps.
   const [step, setStep] = useState<'select' | 'crop' | 'alt'>('select');
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [imageBlob, setImageBlob] = useState<Blob | null>(null);
 
-  const handleFile = useCallback((file: File) => {
-    try {
-      // If the image is animated, skip cropping and go straight to alt text.
-      if (file.type === 'image/gif') {
-        setImageBlob(file);
-        setStep('alt');
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        const dataUri = reader.result;
-        if (typeof dataUri !== 'string') {
-          throw new Error('Expected a string');
+  const handleFile = useCallback(
+    (file: File) => {
+      try {
+        // If the image is animated, skip cropping and go straight to alt text.
+        if (file.type === 'image/gif') {
+          setImageBlob(file);
+          setStep(location === 'profileBackground' ? 'select' : 'alt');
+          if (location === 'profileBackground') {
+            void dispatch(
+              uploadImage({ location, imageBlob: file, altText: '' }),
+            ).then(onClose);
+          }
+          return;
         }
-        setImageSrc(dataUri);
-        setStep('crop');
-      };
-      reader.readAsDataURL(file);
-    } catch (error) {
-      console.warn('Error with image parsing:', error);
-      setStep('select');
-    }
-  }, []);
+
+        const reader = new FileReader();
+        reader.onload = () => {
+          const dataUri = reader.result;
+          if (typeof dataUri !== 'string') {
+            throw new Error('Expected a string');
+          }
+          setImageSrc(dataUri);
+          setStep('crop');
+        };
+        reader.readAsDataURL(file);
+      } catch (error) {
+        console.warn('Error with image parsing:', error);
+        setStep('select');
+      }
+    },
+    [dispatch, location, onClose],
+  );
 
   const handleCrop = useCallback(
     (crop: Area) => {
@@ -96,13 +113,18 @@ export const ImageUploadModal: FC<
       }
       void calculateCroppedImage(imageSrc, crop).then((blob) => {
         setImageBlob(blob);
-        setStep('alt');
+        if (location === 'profileBackground') {
+          void dispatch(
+            uploadImage({ location, imageBlob: blob, altText: '' }),
+          ).then(onClose);
+        } else {
+          setStep('alt');
+        }
       });
     },
-    [imageSrc],
+    [dispatch, imageSrc, location, onClose],
   );
 
-  const dispatch = useAppDispatch();
   const handleSave = useCallback(
     (altText: string) => {
       if (!imageBlob) {
@@ -277,8 +299,8 @@ const StepUpload: FC<{
         values={{
           br: <br />,
           limit: 8,
-          width: location === 'avatar' ? 400 : 1500,
-          height: location === 'avatar' ? 400 : 500,
+          width: imageDimensions[location].width,
+          height: imageDimensions[location].height,
         }}
         tagName='p'
       />
@@ -340,7 +362,7 @@ const StepCrop: FC<{
           zoom={zoom}
           onCropChange={setCrop}
           onCropComplete={handleCropComplete}
-          aspect={location === 'avatar' ? 1 : 3 / 1}
+          aspect={imageDimensions[location].aspect}
           disableAutomaticStylesInjection
         />
       </div>
@@ -372,6 +394,12 @@ const StepCrop: FC<{
     </>
   );
 };
+
+const imageDimensions = {
+  avatar: { width: 400, height: 400, aspect: 1 },
+  header: { width: 1500, height: 500, aspect: 3 / 1 },
+  profileBackground: { width: 1920, height: 1080, aspect: 16 / 9 },
+} as const;
 
 const StepAlt: FC<{
   imageBlob: Blob;

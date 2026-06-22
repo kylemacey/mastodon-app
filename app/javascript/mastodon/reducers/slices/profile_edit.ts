@@ -4,6 +4,7 @@ import { fetchAccount } from '@/mastodon/actions/accounts';
 import {
   apiDeleteFeaturedTag,
   apiDeleteProfileAvatar,
+  apiDeleteProfileBackground,
   apiDeleteProfileHeader,
   apiGetCurrentFeaturedTags,
   apiGetProfile,
@@ -27,6 +28,8 @@ import {
 } from '@/mastodon/store/typed_functions';
 import { hashObjectArray } from '@/mastodon/utils/hash';
 import type { SnakeToCamelCase } from '@/mastodon/utils/types';
+
+import { fetchProfileTheme } from './profile_theme';
 
 type ProfileData = {
   [Key in keyof Omit<
@@ -167,6 +170,12 @@ const transformProfile = (result: ApiProfileJSON): ProfileData => ({
   header: result.header,
   headerStatic: result.header_static,
   headerDescription: result.header_description,
+  profileBackground: result.profile_background,
+  profileBackgroundStatic: result.profile_background_static,
+  profileBackgroundColor: result.profile_background_color,
+  profileAccentColor: result.profile_accent_color,
+  profileFont: result.profile_font,
+  profileCustomCss: result.profile_custom_css,
   locked: result.locked,
   bot: result.bot,
   hideCollections: result.hide_collections,
@@ -190,6 +199,7 @@ export const patchProfile = createDataLoadingThunk(
   (params: Partial<ApiProfileUpdateParams>) => apiPatchProfile(params),
   (response, { dispatch }) => {
     dispatch(fetchAccount(response.id));
+    void dispatch(fetchProfileTheme({ accountId: response.id }));
     return transformProfile(response);
   },
   {
@@ -200,7 +210,30 @@ export const patchProfile = createDataLoadingThunk(
   },
 );
 
-export type ImageLocation = 'avatar' | 'header';
+export type ImageLocation = 'avatar' | 'header' | 'profileBackground';
+
+const imageFields = {
+  avatar: {
+    uploadParam: 'avatar',
+    src: 'avatar',
+    static: 'avatarStatic',
+    alt: 'avatarDescription',
+    deleteImage: apiDeleteProfileAvatar,
+  },
+  header: {
+    uploadParam: 'header',
+    src: 'header',
+    static: 'headerStatic',
+    alt: 'headerDescription',
+    deleteImage: apiDeleteProfileHeader,
+  },
+  profileBackground: {
+    uploadParam: 'profile_background',
+    src: 'profileBackground',
+    static: 'profileBackgroundStatic',
+    deleteImage: apiDeleteProfileBackground,
+  },
+} as const;
 
 export const selectImageInfo = createAppSelector(
   [
@@ -211,11 +244,12 @@ export const selectImageInfo = createAppSelector(
     if (!profile) {
       return {};
     }
+    const fields = imageFields[location];
 
     return {
-      src: profile[location],
-      static: profile[`${location}Static`],
-      alt: profile[`${location}Description`],
+      src: profile[fields.src],
+      static: profile[fields.static],
+      alt: 'alt' in fields ? profile[fields.alt] : undefined,
     };
   },
 );
@@ -223,16 +257,18 @@ export const selectImageInfo = createAppSelector(
 export const uploadImage = createDataLoadingThunk(
   `${profileEditSlice.name}/uploadImage`,
   (arg: { location: ImageLocation; imageBlob: Blob; altText: string }) => {
+    const fields = imageFields[arg.location];
     const formData = new FormData();
-    formData.append(arg.location, arg.imageBlob);
-    if (arg.altText) {
-      formData.append(`${arg.location}_description`, arg.altText);
+    formData.append(fields.uploadParam, arg.imageBlob);
+    if ('alt' in fields && arg.altText) {
+      formData.append(`${fields.uploadParam}_description`, arg.altText);
     }
 
     return apiPatchProfile(formData);
   },
   (response, { dispatch }) => {
     dispatch(fetchAccount(response.id));
+    void dispatch(fetchProfileTheme({ accountId: response.id }));
     return transformProfile(response);
   },
   {
@@ -242,18 +278,13 @@ export const uploadImage = createDataLoadingThunk(
 
 export const deleteImage = createDataLoadingThunk(
   `${profileEditSlice.name}/deleteImage`,
-  (arg: { location: ImageLocation }) => {
-    if (arg.location === 'avatar') {
-      return apiDeleteProfileAvatar();
-    } else {
-      return apiDeleteProfileHeader();
-    }
-  },
+  (arg: { location: ImageLocation }) => imageFields[arg.location].deleteImage(),
   async (_, { dispatch, getState }) => {
     await dispatch(fetchProfile());
     const accountId = getState().profileEdit.profile?.id;
     if (accountId) {
       dispatch(fetchAccount(accountId));
+      void dispatch(fetchProfileTheme({ accountId }));
     }
   },
   {

@@ -241,8 +241,13 @@ class DeleteAccountService < BaseService
     @account.reviewed_at         = nil
     @account.requested_review_at = nil
     @account.also_known_as       = []
+    @account.profile_background_color = ''
+    @account.profile_accent_color = ''
+    @account.profile_font        = 'system'
+    @account.profile_custom_css  = ''
     @account.avatar.destroy
     @account.header.destroy
+    @account.profile_background.destroy
     @account.save!
   end
 

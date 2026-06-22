@@ -1,0 +1,34 @@
+.profileThemeRoot {
+  min-height: 100vh;
+  background-color: transparent;
+  background-image: none;
+  background-position: center top;
+  background-size: cover;
+}
+
+.profileThemeRootBackground {
+  background-color: var(--profile-theme-background-color);
+  background-image: var(--profile-theme-background-image, none);
+  background-attachment: fixed;
+}
+
+.profileThemeRootAccent {
+  --color-bg-brand-base: var(--profile-theme-accent);
+  --color-bg-brand-base-hover: color-mix(
+    in srgb,
+    var(--profile-theme-accent) 85%,
+    white
+  );
+  --color-bg-brand-soft: color-mix(
+    in srgb,
+    var(--profile-theme-accent) 24%,
+    transparent
+  );
+  --color-bg-brand-softest: color-mix(
+    in srgb,
+    var(--profile-theme-accent) 14%,
+    transparent
+  );
+  --color-text-brand: var(--profile-theme-accent);
+  --color-text-brand-soft: var(--profile-theme-accent);
+}
