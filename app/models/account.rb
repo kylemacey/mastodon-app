@@ -41,6 +41,7 @@
 #  note                          :text             default(""), not null
 #  outbox_url                    :string           default(""), not null
 #  private_key                   :text
+#  profile_music                 :jsonb            not null
 #  protocol                      :integer          default("ostatus"), not null
 #  public_key                    :text             default(""), not null
 #  requested_review_at           :datetime
@@ -69,6 +70,7 @@ class Account < ApplicationRecord
   REFRESH_DEADLINE = 6.hours
   STALE_THRESHOLD = 1.day
   DEFAULT_FIELDS_SIZE = 4
+  PROFILE_MUSIC_LIMIT = 5
   INSTANCE_ACTOR_ID = -99
 
   USERNAME_RE   = /[a-z0-9_]+([.-]+[a-z0-9_]+)*/i
@@ -100,6 +102,7 @@ class Account < ApplicationRecord
   include Account::Interactions
   include Account::Mappings
   include Account::Merging
+  include Account::ProfileMusic
   include Account::ProfileTheme
   include Account::Search
   include Account::Sensitizes

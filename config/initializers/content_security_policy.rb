@@ -11,13 +11,15 @@ require_relative '../../app/lib/content_security_policy'
 policy = ContentSecurityPolicy.new
 assets_host = policy.assets_host
 media_hosts = policy.media_hosts
+profile_music_image_hosts = ['https://*.sndcdn.com']
+profile_music_script_hosts = ['https://w.soundcloud.com']
 
 Rails.application.config.content_security_policy do |p|
   p.base_uri        :none
   p.default_src     :none
   p.frame_ancestors :none
   p.font_src        :self, assets_host
-  p.img_src         :self, :data, :blob, *media_hosts
+  p.img_src         :self, :data, :blob, *media_hosts, *profile_music_image_hosts
   p.media_src       :self, :data, *media_hosts
   p.manifest_src    :self, assets_host
 
@@ -35,12 +37,12 @@ Rails.application.config.content_security_policy do |p|
     front_end_build_urls = %w(ws http).map { |protocol| "#{protocol}#{'s' if ViteRuby.config.https}://#{vite_public_host}" }
 
     p.connect_src :self, :data, :blob, *media_hosts, Rails.configuration.x.streaming_api_base_url, *front_end_build_urls
-    p.script_src  :self, :unsafe_inline, :unsafe_eval, assets_host
+    p.script_src  :self, :unsafe_inline, :unsafe_eval, assets_host, *profile_music_script_hosts
     p.frame_src   :self, :https, :http
     p.style_src   :self, assets_host, :unsafe_inline
   else
     p.connect_src :self, :data, :blob, *media_hosts, Rails.configuration.x.streaming_api_base_url
-    p.script_src  :self, assets_host, "'wasm-unsafe-eval'"
+    p.script_src  :self, assets_host, "'wasm-unsafe-eval'", *profile_music_script_hosts
     p.frame_src   :self, :https
     p.style_src   :self, assets_host
   end

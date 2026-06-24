@@ -8,6 +8,8 @@ import {
   apiDeleteProfileHeader,
   apiGetCurrentFeaturedTags,
   apiGetProfile,
+  apiSearchSoundcloudTracks,
+  apiSearchSpotifyTracks,
   apiGetTagSuggestions,
   apiPatchProfile,
   apiPostFeaturedTag,
@@ -17,6 +19,7 @@ import type {
   ApiProfileJSON,
   ApiProfileUpdateParams,
 } from '@/mastodon/api_types/profile';
+import type { ApiProfileMusicItemJSON } from '@/mastodon/api_types/profile_music';
 import type {
   ApiFeaturedTagJSON,
   ApiHashtagJSON,
@@ -34,15 +37,17 @@ import { fetchProfileTheme } from './profile_theme';
 type ProfileData = {
   [Key in keyof Omit<
     ApiProfileJSON,
-    'note' | 'fields' | 'featured_tags'
+    'note' | 'fields' | 'featured_tags' | 'profile_music'
   > as SnakeToCamelCase<Key>]: ApiProfileJSON[Key];
 } & {
   bio: ApiProfileJSON['note'];
   fields: FieldData[];
   featuredTags: TagData[];
+  profileMusic: MusicData[];
 };
 
 export type FieldData = ApiAccountFieldJSON & { id: string };
+export type MusicData = ApiProfileMusicItemJSON & { id: string };
 
 export type TagData = {
   [Key in keyof Omit<
@@ -176,6 +181,7 @@ const transformProfile = (result: ApiProfileJSON): ProfileData => ({
   profileAccentColor: result.profile_accent_color,
   profileFont: result.profile_font,
   profileCustomCss: result.profile_custom_css,
+  profileMusic: hashObjectArray(result.profile_music),
   locked: result.locked,
   bot: result.bot,
   hideCollections: result.hide_collections,
@@ -374,6 +380,18 @@ export const fetchFeaturedTags = createDataLoadingThunk(
 export const fetchSuggestedTags = createDataLoadingThunk(
   `${profileEditSlice.name}/fetchSuggestedTags`,
   apiGetTagSuggestions,
+  { useLoadingBar: false },
+);
+
+export const searchSpotifyTracks = createDataLoadingThunk(
+  `${profileEditSlice.name}/searchSpotifyTracks`,
+  ({ q }: { q: string }) => apiSearchSpotifyTracks(q),
+  { useLoadingBar: false },
+);
+
+export const searchSoundcloudTracks = createDataLoadingThunk(
+  `${profileEditSlice.name}/searchSoundcloudTracks`,
+  ({ q }: { q: string }) => apiSearchSoundcloudTracks(q),
   { useLoadingBar: false },
 );
 

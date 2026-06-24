@@ -24,6 +24,7 @@ import { FamiliarFollowers } from '../familiar_followers';
 import { AccountBanners } from './banners';
 import { AccountButtons } from './buttons';
 import { AccountHeaderFields } from './fields';
+import { AccountMusic } from './music';
 import { AccountName } from './name';
 import { AccountNote } from './note';
 import { AccountNumberFields } from './number_fields';
@@ -151,6 +152,8 @@ export const AccountHeader: React.FC<{
               <AccountBio showDropdown accountId={accountId} />
 
               <AccountHeaderFields accountId={accountId} />
+
+              <AccountMusic accountId={accountId} />
 
               {!me && account.email_subscriptions && (
                 <AccountSubscriptionForm accountId={accountId} />

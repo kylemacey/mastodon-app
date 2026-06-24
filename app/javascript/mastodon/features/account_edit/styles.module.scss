@@ -74,6 +74,33 @@
   }
 }
 
+.musicList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  li {
+    display: flex;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  strong,
+  span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  strong {
+    color: var(--color-text-primary);
+  }
+
+  span {
+    color: var(--color-text-secondary);
+  }
+}
+
 .verifiedLinkHelpButton {
   font-size: 13px;
   font-weight: 600;

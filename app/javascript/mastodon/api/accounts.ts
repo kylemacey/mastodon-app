@@ -18,6 +18,7 @@ import type {
   ApiProfileJSON,
   ApiProfileUpdateParams,
 } from '../api_types/profile';
+import type { ApiProfileMusicItemJSON } from '../api_types/profile_music';
 import type { ApiProfileThemeJSON } from '../api_types/profile_theme';
 
 export const apiGetAccounts = (ids: string[]) =>
@@ -75,6 +76,14 @@ export const apiGetProfile = () => apiRequestGet<ApiProfileJSON>('v1/profile');
 
 export const apiPatchProfile = (params: ApiProfileUpdateParams | FormData) =>
   apiRequestPatch<ApiProfileJSON>('v1/profile', params);
+
+export const apiSearchSoundcloudTracks = (q: string) =>
+  apiRequestGet<ApiProfileMusicItemJSON[]>('v1/profile/music/soundcloud', {
+    q,
+  });
+
+export const apiSearchSpotifyTracks = (q: string) =>
+  apiRequestGet<ApiProfileMusicItemJSON[]>('v1/profile/music/spotify', { q });
 
 export const apiGetAccountProfileTheme = (id: string) =>
   apiRequestGet<ApiProfileThemeJSON>(`v1/accounts/${id}/profile_theme`);

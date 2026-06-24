@@ -53,6 +53,7 @@ export const accountFactory: FactoryFunction<ApiAccountJSON> = ({
   mute_expires_at: null,
   note: 'This is a test user account.',
   profile_font: 'system',
+  profile_music: [],
   statuses_count: 0,
   suspended: false,
   url: '/@testuser',

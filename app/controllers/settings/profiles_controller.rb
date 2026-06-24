@@ -20,7 +20,22 @@ class Settings::ProfilesController < Settings::BaseController
   private
 
   def account_params
-    params.expect(account: [:display_name, :note, :avatar, :header, :profile_background, :profile_background_color, :profile_accent_color, :profile_font, :profile_custom_css, :bot, fields_attributes: [[:name, :value]]])
+    params.expect(
+      account: [
+        :display_name,
+        :note,
+        :avatar,
+        :header,
+        :profile_background,
+        :profile_background_color,
+        :profile_accent_color,
+        :profile_font,
+        :profile_custom_css,
+        :bot,
+        fields_attributes: [[:name, :value]],
+        profile_music: [[:provider, :provider_id, :url, :title, :artist, :thumbnail_url]],
+      ]
+    )
   end
 
   def set_account

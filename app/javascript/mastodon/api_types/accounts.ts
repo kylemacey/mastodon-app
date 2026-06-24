@@ -1,4 +1,5 @@
 import type { ApiCustomEmojiJSON } from './custom_emoji';
+import type { ApiProfileMusicItemJSON } from './profile_music';
 import type { ApiProfileFont } from './profile_theme';
 
 export interface ApiAccountFieldJSON {
@@ -62,6 +63,7 @@ export interface BaseApiAccountJSON {
   noindex?: boolean;
   note: string;
   profile_font: ApiProfileFont;
+  profile_music: ApiProfileMusicItemJSON[];
   roles?: ApiAccountJSON[];
   statuses_count: number;
   uri: string;

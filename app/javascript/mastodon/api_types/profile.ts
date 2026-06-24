@@ -1,4 +1,8 @@
 import type { ApiAccountFieldJSON } from './accounts';
+import type {
+  ApiProfileMusicItemJSON,
+  ApiProfileMusicUpdateParams,
+} from './profile_music';
 import type { ApiProfileFont } from './profile_theme';
 import type { ApiFeaturedTagJSON } from './tags';
 
@@ -19,6 +23,7 @@ export interface ApiProfileJSON {
   profile_accent_color: string;
   profile_font: ApiProfileFont;
   profile_custom_css: string;
+  profile_music: ApiProfileMusicItemJSON[];
   locked: boolean;
   bot: boolean;
   hide_collections: boolean;
@@ -54,4 +59,5 @@ export type ApiProfileUpdateParams = Partial<
 > & {
   attribution_domains?: string[];
   fields_attributes?: Pick<ApiAccountFieldJSON, 'name' | 'value'>[];
+  profile_music?: ApiProfileMusicUpdateParams[];
 };

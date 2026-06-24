@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom';
 
 import type { ModalType } from '@/mastodon/actions/modal';
 import { openModal } from '@/mastodon/actions/modal';
+import { hasActiveProfileMusicProviders } from '@/mastodon/api_types/profile_music';
 import { AccountBio } from '@/mastodon/components/account_bio';
 import { Avatar } from '@/mastodon/components/avatar';
 import { Button } from '@/mastodon/components/button';
@@ -105,6 +106,18 @@ export const messages = defineMessages({
     id: 'account_edit.featured_hashtags.edit_label',
     defaultMessage: 'Add hashtags',
   },
+  profileMusicTitle: {
+    id: 'account_edit.profile_music.title',
+    defaultMessage: 'Profile music',
+  },
+  profileMusicPlaceholder: {
+    id: 'account_edit.profile_music.placeholder',
+    defaultMessage: 'Add a featured song and playlist.',
+  },
+  profileMusicEditLabel: {
+    id: 'account_edit.profile_music.edit_label',
+    defaultMessage: 'Edit music',
+  },
   profileTabTitle: {
     id: 'account_edit.profile_tab.title',
     defaultMessage: 'Profile display settings',
@@ -180,6 +193,9 @@ export const AccountEdit: FC = () => {
   const handleProfileDisplayEdit = useCallback(() => {
     handleOpenModal('ACCOUNT_EDIT_PROFILE_DISPLAY');
   }, [handleOpenModal]);
+  const handleProfileMusicEdit = useCallback(() => {
+    handleOpenModal('ACCOUNT_EDIT_PROFILE_MUSIC');
+  }, [handleOpenModal]);
 
   const history = useHistory();
   const handleFeaturedTagsEdit = useCallback(() => {
@@ -208,6 +224,8 @@ export const AccountEdit: FC = () => {
   const hasBio = !!profile.bio;
   const hasFields = profile.fields.length > 0;
   const hasTags = profile.featuredTags.length > 0;
+  const hasMusic =
+    hasActiveProfileMusicProviders && profile.profileMusic.length > 0;
 
   return (
     <AccountEditColumn
@@ -341,6 +359,32 @@ export const AccountEdit: FC = () => {
         >
           {profile.featuredTags.map((tag) => `#${tag.name}`).join(', ')}
         </AccountEditSection>
+
+        {hasActiveProfileMusicProviders && (
+          <AccountEditSection
+            title={messages.profileMusicTitle}
+            description={messages.profileMusicPlaceholder}
+            showDescription={!hasMusic}
+            buttons={
+              <EditButton
+                onClick={handleProfileMusicEdit}
+                icon={hasMusic}
+                label={intl.formatMessage(messages.profileMusicEditLabel)}
+              />
+            }
+          >
+            {hasMusic && (
+              <ol className={classes.musicList}>
+                {profile.profileMusic.map((track) => (
+                  <li key={track.id}>
+                    <strong>{track.title}</strong>
+                    {track.artist && <span>{track.artist}</span>}
+                  </li>
+                ))}
+              </ol>
+            )}
+          </AccountEditSection>
+        )}
 
         <AccountEditSection
           title={messages.profileStyleTitle}

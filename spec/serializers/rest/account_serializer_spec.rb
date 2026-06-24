@@ -18,11 +18,24 @@ RSpec.describe REST::AccountSerializer do
 
   context 'when the account is suspended' do
     before do
+      account.update!(
+        profile_music: [
+          {
+            provider: 'spotify',
+            provider_id: '3n3Ppam7vgaVa1iaRUc9Lp',
+            title: 'A Song',
+          },
+        ]
+      )
       account.suspend!
     end
 
     it 'returns empty roles' do
       expect(subject['roles']).to eq []
+    end
+
+    it 'returns empty profile music' do
+      expect(subject['profile_music']).to eq []
     end
   end
 

@@ -190,6 +190,107 @@
   }
 }
 
+.music {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.musicEmbed {
+  display: block;
+  width: 100%;
+  height: 166px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--color-bg-secondary);
+}
+
+.musicEmbedBandcamp {
+  height: 42px;
+}
+
+.musicList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.musicListItem {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  min-height: 48px;
+  padding: 4px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-text-primary);
+  text-align: start;
+
+  &:hover,
+  &:focus {
+    border-color: var(--color-border-primary);
+    background: var(--color-bg-secondary);
+  }
+}
+
+.musicArtwork {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  background: var(--color-bg-secondary);
+  color: var(--color-text-secondary);
+
+  img {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    object-fit: cover;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.musicListText {
+  min-width: 0;
+
+  .musicListItem & {
+    min-width: 0;
+  }
+
+  strong,
+  small {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  strong {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  small {
+    margin-top: 2px;
+    color: var(--color-text-secondary);
+  }
+}
+
+.musicListItemActive {
+  border-color: var(--color-border-primary);
+  background: var(--color-bg-secondary);
+}
+
 $button-breakpoint: 420px;
 $button-fallback-breakpoint: $button-breakpoint + 55px;
 

@@ -91,6 +91,7 @@ export const accountDefaultValues: AccountShape = {
   note_emojified: '',
   note_plain: 'string',
   profile_font: 'system',
+  profile_music: [],
   roles: ImmutableList<AccountRole>(),
   uri: '',
   url: '',

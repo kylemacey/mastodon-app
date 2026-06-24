@@ -9,7 +9,7 @@ class REST::AccountSerializer < ActiveModel::Serializer
   attributes :id, :username, :acct, :display_name, :locked, :bot, :discoverable, :indexable, :group, :created_at,
              :note, :url, :uri, :avatar, :avatar_static, :avatar_description, :header, :header_static, :header_description,
              :followers_count, :following_count, :statuses_count, :last_status_at, :hide_collections,
-             :show_media, :show_media_replies, :show_featured, :profile_font
+             :show_media, :show_media_replies, :show_featured, :profile_font, :profile_music
 
   has_one :moved_to_account, key: :moved, serializer: REST::AccountSerializer, if: :moved_and_not_nested?
 
@@ -142,6 +142,10 @@ class REST::AccountSerializer < ActiveModel::Serializer
 
   def fields
     object.unavailable? ? [] : object.fields
+  end
+
+  def profile_music
+    object.unavailable? ? [] : object.public_profile_music
   end
 
   def suspended

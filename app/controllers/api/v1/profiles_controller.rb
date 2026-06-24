@@ -42,6 +42,7 @@ class Api::V1::ProfilesController < Api::BaseController
       :show_media_replies,
       :show_featured,
       attribution_domains: [],
+      profile_music: [[:provider, :provider_id, :url, :title, :artist, :thumbnail_url]],
       fields_attributes: [:name, :value]
     )
   end

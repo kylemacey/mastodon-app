@@ -25,7 +25,20 @@ RSpec.describe '/api/v1/accounts' do
 
   describe 'GET /api/v1/accounts/:id' do
     context 'when logged out' do
-      let(:account) { Fabricate(:account) }
+      let(:account) do
+        Fabricate(
+          :account,
+          profile_music: [
+            {
+              provider: 'soundcloud',
+              provider_id: '319412512',
+              url: 'https://soundcloud.com/odesza/line-of-sight-feat-wynne-mansionair',
+              title: 'Line Of Sight (feat. WYNNE & Mansionair)',
+              artist: 'ODESZA',
+            },
+          ]
+        )
+      end
 
       it 'returns account entity as 200 OK', :aggregate_failures do
         get "/api/v1/accounts/#{account.id}"
@@ -34,6 +47,15 @@ RSpec.describe '/api/v1/accounts' do
         expect(response.content_type)
           .to start_with('application/json')
         expect(response.parsed_body[:id]).to eq(account.id.to_s)
+        expect(response.parsed_body[:profile_music])
+          .to contain_exactly(
+            include(
+              provider: 'soundcloud',
+              provider_id: '319412512',
+              title: 'Line Of Sight (feat. WYNNE & Mansionair)',
+              featured: true
+            )
+          )
       end
     end
 

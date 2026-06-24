@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_21_170000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_22_035400) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -199,6 +199,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_21_170000) do
     t.datetime "profile_background_updated_at"
     t.text "profile_custom_css", default: "", null: false
     t.string "profile_font", default: "system", null: false
+    t.jsonb "profile_music", default: [], null: false
     t.integer "protocol", default: 0, null: false
     t.text "public_key", default: "", null: false
     t.datetime "requested_review_at", precision: nil

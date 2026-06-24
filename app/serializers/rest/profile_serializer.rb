@@ -10,6 +10,7 @@ class REST::ProfileSerializer < ActiveModel::Serializer
              :avatar, :avatar_static, :avatar_description, :header, :header_static, :header_description,
              :profile_background, :profile_background_static, :profile_background_color, :profile_accent_color,
              :profile_font, :profile_custom_css,
+             :profile_music,
              :locked, :bot,
              :hide_collections, :discoverable, :indexable,
              :show_media, :show_media_replies, :show_featured,
@@ -55,5 +56,9 @@ class REST::ProfileSerializer < ActiveModel::Serializer
 
   def profile_background_static
     object.profile_background_file_name.present? ? full_asset_url(object.profile_background_static_url) : nil
+  end
+
+  def profile_music
+    object.public_profile_music
   end
 end

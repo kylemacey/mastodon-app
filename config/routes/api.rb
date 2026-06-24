@@ -119,6 +119,11 @@ namespace :api, format: false do
 
     resource :profile, only: [:show, :update] do
       scope module: :profile do
+        namespace :music do
+          resources :soundcloud, only: :index
+          resources :spotify, only: :index
+        end
+
         resource :avatar, only: :destroy
         resource :header, only: :destroy
         resource :background, only: :destroy
