@@ -63,7 +63,7 @@ module Account::Mappings
 
     def endorsed_map(target_account_ids, account_id)
       build_mapping(
-        AccountPin.where(account_id: account_id, target_account_id: target_account_ids),
+        AccountPin.top_eight.where(account_id: account_id, target_account_id: target_account_ids),
         :target_account_id
       )
     end

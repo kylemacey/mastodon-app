@@ -21,7 +21,9 @@ en:
     link_verified_on: Ownership of this link was checked on %{date}
     nothing_here: There is nothing here!
     pin_errors:
-      following: You must be already following the person you want to endorse
+      following: You must be already following the person you want to add to your Top 8
+      limit: You can only add %{count} accounts to your Top 8
+      reorder: Reorder request must include exactly your current Top 8 accounts
     posts:
       one: Post
       other: Posts

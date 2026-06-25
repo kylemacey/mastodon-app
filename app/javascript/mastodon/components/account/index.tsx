@@ -194,7 +194,7 @@ export const Account: React.FC<AccountProps> = ({
           action: handleAddToLists,
         });
 
-        if (id !== me && (relationship?.following || relationship?.requested)) {
+        if (id !== me && relationship?.following) {
           const handleEndorseToggle = () => {
             if (relationship.endorsed) {
               dispatch(unpinAccount(id));
@@ -206,8 +206,14 @@ export const Account: React.FC<AccountProps> = ({
             text: intl.formatMessage(
               // Defined in features/account_timeline/components/account_header.tsx
               relationship.endorsed
-                ? { id: 'account.unendorse' }
-                : { id: 'account.endorse' },
+                ? {
+                    id: 'account.unendorse',
+                    defaultMessage: 'Remove from My Top 8',
+                  }
+                : {
+                    id: 'account.endorse',
+                    defaultMessage: 'Add to My Top 8',
+                  },
             ),
             action: handleEndorseToggle,
           });

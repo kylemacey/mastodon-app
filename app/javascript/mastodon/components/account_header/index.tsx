@@ -30,6 +30,7 @@ import { AccountNumberFields } from './number_fields';
 import classes from './styles.module.scss';
 import { AccountSubscriptionForm } from './subscription_form';
 import { AccountTabs } from './tabs';
+import { AccountTop8 } from './top8';
 
 const titleFromAccount = (account: Account) => {
   const displayName = account.display_name;
@@ -169,6 +170,7 @@ export const AccountHeader: React.FC<{
         </div>
       </AnimateEmojiProvider>
 
+      <AccountTop8 accountId={accountId} hidden={suspendedOrHidden} />
       {!hideTabs && !hidden && <AccountTabs />}
       <div ref={observedRef} />
 
