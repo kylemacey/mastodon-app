@@ -1,0 +1,64 @@
+name: Build Kyspace container images
+
+on:
+  push:
+    branches:
+      - ktm/main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  compute-metadata:
+    runs-on: ubuntu-24.04
+
+    outputs:
+      metadata: ${{ steps.version.outputs.metadata }}
+      short_sha: ${{ steps.version.outputs.short_sha }}
+
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+
+      - id: version
+        run: |
+          short_sha="$(git rev-parse --short "$GITHUB_SHA")"
+          echo "short_sha=${short_sha}" >> "$GITHUB_OUTPUT"
+          echo "metadata=kyspace.${short_sha}" >> "$GITHUB_OUTPUT"
+
+  build-image:
+    needs: compute-metadata
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+
+    uses: ./.github/workflows/build-container-image.yml
+    with:
+      file_to_build: Dockerfile
+      push_to_images: |
+        ghcr.io/kylemacey/mastodon-app
+      version_metadata: ${{ needs.compute-metadata.outputs.metadata }}
+      tags: |
+        type=raw,value=latest
+        type=raw,value=ktm-main
+        type=raw,value=sha-${{ needs.compute-metadata.outputs.short_sha }}
+    secrets: inherit
+
+  build-streaming-image:
+    needs: compute-metadata
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-streaming
+      cancel-in-progress: true
+
+    uses: ./.github/workflows/build-container-image.yml
+    with:
+      file_to_build: streaming/Dockerfile
+      push_to_images: |
+        ghcr.io/kylemacey/mastodon-app-streaming
+      version_metadata: ${{ needs.compute-metadata.outputs.metadata }}
+      tags: |
+        type=raw,value=latest
+        type=raw,value=ktm-main
+        type=raw,value=sha-${{ needs.compute-metadata.outputs.short_sha }}
+    secrets: inherit
