@@ -10,7 +10,7 @@ module Account::Associations
       with_options inverse_of: :account do
         has_many :account_moderation_notes
         has_many :account_notes
-        has_many :account_pins
+        has_many :account_pins, -> { ordered }
         has_many :account_warnings
         has_many :action_logs, class_name: 'Admin::ActionLog'
         has_many :aliases, class_name: 'AccountAlias'

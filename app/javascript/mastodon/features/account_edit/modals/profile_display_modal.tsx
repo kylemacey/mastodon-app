@@ -261,13 +261,13 @@ const ProfileDisplayModalContent: FC<
           label={
             <FormattedMessage
               id='account_edit.profile_tab.show_featured.title'
-              defaultMessage='Show ‘Featured’ tab'
+              defaultMessage='Show ‘My Top 8’ tab'
             />
           }
           hint={
             <FormattedMessage
               id='account_edit.profile_tab.show_featured.description'
-              defaultMessage='‘Featured’ is an optional tab where you can showcase other accounts.'
+              defaultMessage='‘My Top 8’ is an optional tab where you can showcase your favorite accounts and collections.'
             />
           }
         />

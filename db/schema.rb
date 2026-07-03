@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_22_035400) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_25_170000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -84,8 +84,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_22_035400) do
   create_table "account_pins", force: :cascade do |t|
     t.bigint "account_id", null: false
     t.datetime "created_at", precision: nil, null: false
+    t.integer "position", null: false
     t.bigint "target_account_id", null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.index ["account_id", "position"], name: "index_account_pins_on_account_id_and_position", unique: true
     t.index ["account_id", "target_account_id"], name: "index_account_pins_on_account_id_and_target_account_id", unique: true
     t.index ["target_account_id"], name: "index_account_pins_on_target_account_id"
   end

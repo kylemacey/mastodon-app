@@ -16,7 +16,13 @@ class Api::V1::Accounts::EndorsementsController < Api::BaseController
   end
 
   def create
-    AccountPin.find_or_create_by!(account: current_account, target_account: @account)
+    AccountPin.transaction do
+      AccountPin.demote_unavailable_top_eight!(current_account.id)
+
+      account_pin = AccountPin.find_or_initialize_by(account: current_account, target_account: @account)
+      account_pin.persisted? ? account_pin.promote_to_top_eight! : account_pin.save!
+    end
+
     render json: @account, serializer: REST::RelationshipSerializer, relationships: relationships_presenter
   end
 
@@ -37,11 +43,11 @@ class Api::V1::Accounts::EndorsementsController < Api::BaseController
   end
 
   def paginated_endorsed_accounts
-    @account.endorsed_accounts.without_suspended.includes(:account_stat, :user).paginate_by_max_id(
-      limit_param(DEFAULT_ACCOUNTS_LIMIT),
-      params[:max_id],
-      params[:since_id]
-    )
+    @account.account_pins
+      .top_eight
+      .includes(target_account: [:account_stat, :user])
+      .filter_map(&:target_account)
+      .reject(&:suspended?)
   end
 
   def relationships_presenter
@@ -53,7 +59,7 @@ class Api::V1::Accounts::EndorsementsController < Api::BaseController
   end
 
   def prev_path
-    api_v1_account_endorsements_url pagination_params(since_id: pagination_since_id) unless @endorsed_accounts.empty?
+    nil
   end
 
   def pagination_collection
@@ -61,6 +67,6 @@ class Api::V1::Accounts::EndorsementsController < Api::BaseController
   end
 
   def records_continue?
-    @endorsed_accounts.size == limit_param(DEFAULT_ACCOUNTS_LIMIT)
+    false
   end
 end

@@ -18,6 +18,7 @@ interface EmptyMessageProps {
   hidden: boolean;
   blockedBy: boolean;
   accountId?: string;
+  variant?: 'top8' | 'collections';
   withoutAddCollectionButton?: boolean;
 }
 
@@ -26,6 +27,7 @@ export const EmptyMessage: React.FC<EmptyMessageProps> = ({
   suspended,
   hidden,
   blockedBy,
+  variant = 'top8',
   withoutAddCollectionButton,
 }) => {
   const me = useCurrentAccountId();
@@ -49,20 +51,44 @@ export const EmptyMessage: React.FC<EmptyMessageProps> = ({
   let title: React.ReactNode = null;
   let message: React.ReactNode = null;
 
-  if (me === accountId) {
+  if (variant === 'collections') {
+    if (me === accountId) {
+      title = (
+        <FormattedMessage
+          id='empty_column.account_featured_collections_self'
+          defaultMessage='You have not created any collections yet.'
+        />
+      );
+    } else if (account) {
+      title = (
+        <FormattedMessage
+          id='empty_column.account_featured_collections.other'
+          defaultMessage='{acct} has not created any collections yet.'
+          values={{ acct: <DisplayName variant='simple' account={account} /> }}
+        />
+      );
+    } else {
+      title = (
+        <FormattedMessage
+          id='empty_column.account_featured_collections_unknown.other'
+          defaultMessage='This account has not created any collections yet.'
+        />
+      );
+    }
+  } else if (me === accountId) {
     // Return only here to insert the "Create a collection" button as the action for the empty state.
     return (
       <EmptyState
         title={
           <FormattedMessage
             id='empty_column.account_featured_self.showcase_accounts'
-            defaultMessage='Showcase your favorite accounts'
+            defaultMessage='Build your Top 8'
           />
         }
         message={
           <FormattedMessage
             id='empty_column.account_featured_self.showcase_accounts_desc'
-            defaultMessage='Collections are curated lists of accounts to help others discover more of the Fediverse.'
+            defaultMessage='Add favorite accounts from their profiles, then arrange them here.'
           />
         }
       >
@@ -77,7 +103,7 @@ export const EmptyMessage: React.FC<EmptyMessageProps> = ({
         <Button secondary onClick={confirmHideFeaturedTab}>
           <FormattedMessage
             id='empty_column.account_featured_self.no_collections_hide_tab'
-            defaultMessage='Hide this tab instead'
+            defaultMessage='Hide My Top 8 instead'
           />
         </Button>
       </EmptyState>
@@ -103,7 +129,7 @@ export const EmptyMessage: React.FC<EmptyMessageProps> = ({
       title = (
         <FormattedMessage
           id='empty_column.account_featured.other'
-          defaultMessage='{acct} has not featured anything yet.'
+          defaultMessage='{acct} has not added a Top 8 yet.'
           values={{ acct: <DisplayName variant='simple' account={account} /> }}
         />
       );
@@ -111,7 +137,7 @@ export const EmptyMessage: React.FC<EmptyMessageProps> = ({
       title = (
         <FormattedMessage
           id='empty_column.account_featured_unknown.other'
-          defaultMessage='This account has not featured anything yet.'
+          defaultMessage='This account has not added a Top 8 yet.'
         />
       );
     }

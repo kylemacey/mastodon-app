@@ -1,4 +1,5 @@
-import type { FC } from 'react';
+import { useEffect  } from 'react';
+import type {FC} from 'react';
 
 import { FormattedMessage } from 'react-intl';
 
@@ -6,6 +7,11 @@ import type { NavLinkProps } from 'react-router-dom';
 
 import { useAccount } from '@/mastodon/hooks/useAccount';
 import { useAccountId } from '@/mastodon/hooks/useAccountId';
+import {
+  fetchCollectionsCreatedByAccount,
+  selectAccountCollections,
+} from '@/mastodon/reducers/slices/collections';
+import { useAppDispatch, useAppSelector } from '@/mastodon/store';
 
 import { TabLink, TabList } from '../tab_list';
 
@@ -18,13 +24,26 @@ const isActive: Required<NavLinkProps>['isActive'] = (match, location) =>
 export const AccountTabs: FC = () => {
   const accountId = useAccountId();
   const account = useAccount(accountId);
+  const dispatch = useAppDispatch();
+  const { collections, status } = useAppSelector((state) =>
+    selectAccountCollections(state, accountId, 'createdBy'),
+  );
+
+  useEffect(() => {
+    if (accountId && account?.show_featured) {
+      void dispatch(fetchCollectionsCreatedByAccount({ accountId }));
+    }
+  }, [account?.show_featured, accountId, dispatch]);
 
   if (!account) {
     return <hr className={classes.noTabs} />;
   }
 
   const { acct, show_featured, show_media } = account;
-  if (!show_featured && !show_media) {
+  const showCollections =
+    show_featured && status === 'idle' && collections.length > 0;
+
+  if (!showCollections && !show_media) {
     return <hr className={classes.noTabs} />;
   }
 
@@ -38,9 +57,12 @@ export const AccountTabs: FC = () => {
           <FormattedMessage id='account.media' defaultMessage='Media' />
         </TabLink>
       )}
-      {show_featured && (
+      {showCollections && (
         <TabLink exact to={`/@${acct}/featured`}>
-          <FormattedMessage id='account.featured' defaultMessage='Featured' />
+          <FormattedMessage
+            id='account.featured.collections'
+            defaultMessage='Collections'
+          />
         </TabLink>
       )}
     </TabList>

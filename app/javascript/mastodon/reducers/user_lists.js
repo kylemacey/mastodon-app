@@ -30,6 +30,7 @@ import {
   authorizeFollowRequestSuccess,
   rejectFollowRequestSuccess,
   fetchEndorsedAccounts,
+  reorderEndorsedAccounts,
 } from '../actions/accounts';
 import {
   BLOCKS_FETCH_REQUEST,
@@ -193,6 +194,8 @@ export default function userLists(state = initialState, action) {
     return state.setIn(['mutes', 'isLoading'], false);
   default:
     if (fetchEndorsedAccounts.fulfilled.match(action))
+      return normalizeList(state, ['featured_accounts', action.meta.arg.accountId], action.payload, undefined);
+    else if (reorderEndorsedAccounts.fulfilled.match(action))
       return normalizeList(state, ['featured_accounts', action.meta.arg.accountId], action.payload, undefined);
     else if (fetchEndorsedAccounts.pending.match(action))
       return state.setIn(['featured_accounts', action.meta.arg.accountId, 'isLoading'], true);

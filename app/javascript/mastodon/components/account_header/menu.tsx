@@ -127,10 +127,10 @@ const messages = defineMessages({
     id: 'account.edit_note',
     defaultMessage: 'Edit personal note',
   },
-  endorse: { id: 'account.endorse', defaultMessage: 'Feature on profile' },
+  endorse: { id: 'account.endorse', defaultMessage: 'Add to My Top 8' },
   unendorse: {
     id: 'account.unendorse',
-    defaultMessage: "Don't feature on profile",
+    defaultMessage: 'Remove from My Top 8',
   },
   add_or_remove_from_list: {
     id: 'account.add_or_remove_from_list',

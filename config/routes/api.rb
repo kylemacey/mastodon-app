@@ -115,6 +115,7 @@ namespace :api, format: false do
     resources :trends, only: [:index], controller: 'trends/tags'
     resources :filters, only: [:index, :create, :show, :update, :destroy]
     resources :endorsements, only: [:index]
+    patch :endorsements, to: 'endorsements#update'
     resources :markers, only: [:index, :create]
 
     resource :profile, only: [:show, :update] do
