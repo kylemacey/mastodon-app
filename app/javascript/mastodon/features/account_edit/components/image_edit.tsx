@@ -5,8 +5,6 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import classNames from 'classnames';
 
-import type { OffsetValue } from 'react-overlays/esm/usePopper';
-
 import type { ModalType } from '@/mastodon/actions/modal';
 import { openModal } from '@/mastodon/actions/modal';
 import { Dropdown } from '@/mastodon/components/dropdown_menu';
@@ -123,7 +121,7 @@ export const AccountImageEdit: FC<{
     <Dropdown
       items={items}
       placement={location === 'avatar' ? 'bottom-start' : 'bottom-end'}
-      offset={popperOffset}
+      offset={6}
       className={classes.imageMenu}
       icon='camera'
       title={intl.formatMessage(messages.replace)}
@@ -132,5 +130,3 @@ export const AccountImageEdit: FC<{
     />
   );
 };
-
-const popperOffset = [0, 6] as OffsetValue;

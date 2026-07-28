@@ -3,20 +3,15 @@ import { forwardRef, useCallback, useState } from 'react';
 
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
-import AddIcon from '@/material-icons/400-24px/add.svg?react';
-import ArrowDownwardIcon from '@/material-icons/400-24px/arrow_downward.svg?react';
-import ArrowUpwardIcon from '@/material-icons/400-24px/arrow_upward.svg?react';
-import DeleteIcon from '@/material-icons/400-24px/delete.svg?react';
-import MusicNoteIcon from '@/material-icons/400-24px/music_note.svg?react';
-import { Button } from '@/mastodon/components/button';
-import { TextInputField } from '@/mastodon/components/form_fields';
-import { Icon } from '@/mastodon/components/icon';
-import { IconButton } from '@/mastodon/components/icon_button';
 import {
   hasActiveProfileMusicProviders,
   isActiveProfileMusicProvider,
 } from '@/mastodon/api_types/profile_music';
 import type { ApiProfileMusicUpdateParams } from '@/mastodon/api_types/profile_music';
+import { Button } from '@/mastodon/components/button';
+import { TextInputField } from '@/mastodon/components/form_fields';
+import { Icon } from '@/mastodon/components/icon';
+import { IconButton } from '@/mastodon/components/icon_button';
 import {
   patchProfile,
   searchSoundcloudTracks,
@@ -27,6 +22,11 @@ import type {
 } from '@/mastodon/reducers/slices/profile_edit';
 import { useAppDispatch, useAppSelector } from '@/mastodon/store';
 import { hashObjectArray } from '@/mastodon/utils/hash';
+import AddIcon from '@/material-icons/400-24px/add.svg?react';
+import ArrowDownwardIcon from '@/material-icons/400-24px/arrow_downward.svg?react';
+import ArrowUpwardIcon from '@/material-icons/400-24px/arrow_upward.svg?react';
+import DeleteIcon from '@/material-icons/400-24px/delete.svg?react';
+import MusicIcon from '@/material-icons/400-24px/graphic_eq.svg?react';
 
 import type { DialogModalProps } from '../../ui/components/dialog_modal';
 import { DialogModal } from '../../ui/components/dialog_modal';
@@ -333,9 +333,7 @@ const MusicModalContent: FC<
           </p>
         )}
 
-        {saveError && (
-          <p className={classes.profileMusicError}>{saveError}</p>
-        )}
+        {saveError && <p className={classes.profileMusicError}>{saveError}</p>}
 
         <ol className={classes.profileMusicTracks}>
           {tracks.map((track, index) => (
@@ -464,7 +462,7 @@ const MusicArtwork: FC<{ track: MusicData }> = ({ track }) => {
 
   return (
     <span className={classes.profileMusicArtwork} aria-hidden='true'>
-      <Icon id='music-note' icon={MusicNoteIcon} />
+      <Icon id='music-note' icon={MusicIcon} />
     </span>
   );
 };

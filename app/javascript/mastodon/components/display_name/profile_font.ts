@@ -1,6 +1,6 @@
-import type { Account } from '@/mastodon/models/account';
+import type { Account, AccountShapeFull } from '@/mastodon/models/account';
 
-export function profileFontClassName(account?: Account) {
-  const font = account?.get('profile_font') ?? 'system';
+export function profileFontClassName(account?: Account | AccountShapeFull) {
+  const font = account?.profile_font ?? 'system';
   return font === 'system' ? undefined : `profile-font--${font}`;
 }

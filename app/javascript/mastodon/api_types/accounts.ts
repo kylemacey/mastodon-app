@@ -64,7 +64,7 @@ export interface BaseApiAccountJSON {
   note: string;
   profile_font: ApiProfileFont;
   profile_music: ApiProfileMusicItemJSON[];
-  roles?: ApiAccountJSON[];
+  roles?: ApiAccountRoleJSON[];
   statuses_count: number;
   uri: string;
   url?: string;

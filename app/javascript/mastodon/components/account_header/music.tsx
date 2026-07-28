@@ -1,18 +1,12 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import classNames from 'classnames';
 
-import MusicNoteIcon from '@/material-icons/400-24px/music_note.svg?react';
 import { isActiveProfileMusicProvider } from '@/mastodon/api_types/profile_music';
 import type { ApiProfileMusicItemJSON } from '@/mastodon/api_types/profile_music';
 import { Icon } from '@/mastodon/components/icon';
 import { useAppSelector } from '@/mastodon/store';
+import MusicIcon from '@/material-icons/400-24px/graphic_eq.svg?react';
 
 import classes from './styles.module.scss';
 
@@ -65,11 +59,11 @@ export const AccountMusic: React.FC<{ accountId: string }> = ({
   );
   const [selectedUrl, setSelectedUrl] = useState<string | undefined>();
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const loadedUrlRef = useRef<string>();
-  const widgetRef = useRef<SoundcloudWidget>();
+  const loadedUrlRef = useRef<string | undefined>(undefined);
+  const widgetRef = useRef<SoundcloudWidget | undefined>(undefined);
   const musicRef = useRef(music);
-  const pendingAutoplayUrlRef = useRef<string>();
-  const selectedUrlRef = useRef<string | undefined>();
+  const pendingAutoplayUrlRef = useRef<string | undefined>(undefined);
+  const selectedUrlRef = useRef<string | undefined>(undefined);
 
   const selectedTrack = useMemo(
     () => music.find((track) => track.url === selectedUrl) ?? music[0],
@@ -229,7 +223,7 @@ const MusicArtwork: React.FC<{ track: ApiProfileMusicItemJSON }> = ({
     {track.thumbnail_url ? (
       <img src={track.thumbnail_url} alt='' loading='lazy' />
     ) : (
-      <Icon id='music-note' icon={MusicNoteIcon} />
+      <Icon id='music-note' icon={MusicIcon} />
     )}
   </span>
 );

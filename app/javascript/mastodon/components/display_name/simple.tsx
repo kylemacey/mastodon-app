@@ -20,8 +20,8 @@ export const DisplayNameSimple: FC<
         {...props}
         as='span'
         className={classNames(profileFontClassName(account), className)}
-        htmlString={account.get('display_name_html')}
-        extraEmojis={account.get('emojis')}
+        htmlString={account.display_name_html}
+        extraEmojis={account.emojis}
       />
     </bdi>
   );
